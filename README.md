@@ -1,6 +1,1 @@
-- 👋 Hi, I’m @RSCAV
-- 👀 I’m interested in computer science, innovative technology, and exploring the intersection of tech and entrepreneurship.
-- 🌱 I’m currently learning the basics: HTML, CSS, PYTHON, etc. 
-- 💞️ I’m looking to collaborate on tech projects for beginners that focus on solving real-world problems.
-- 📫 How to reach me: You can email me at rscav06@gmail.com or connect with me on LinkedIn at 
-- ⚡ Fun fact: I once managed a restaurant team and led a project in the tech department, all before turning 18!
+Founder LuxVeritas
