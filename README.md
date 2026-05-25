@@ -2,12 +2,12 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/header-dark.svg">
-  <img alt="Rodrigo Casanova-Aleman — Founder & Software Engineer" src="./assets/header-light.svg" width="100%">
+  <img alt="Rodrigo Casanova-Aleman, multifaceted founder, always building" src="./assets/header-light.svg" width="100%">
 </picture>
 
-<!-- ───────────────────────────  BIO  ──────────────────────────── -->
+🦈 &nbsp; **Always forward.**
 
-I'm a developer and founder building products with an obsession for craft — the small details that make software feel effortless. I run **[Gradvisr](https://gradvisr.com)**, an AI degree planner, and design under **[Casanovaaleman](https://casanovaaleman.com)**, my web studio. Currently building with **TypeScript**, **Next.js**, **React**, and **Tailwind CSS**.
+Founder of a startup, a studio, and whatever comes next.
 
 [![Website](https://img.shields.io/badge/casanovaaleman.com-0a0a0a?style=flat-square&logo=safari&logoColor=white)](https://casanovaaleman.com)
 [![GitHub](https://img.shields.io/badge/GitHub-0a0a0a?style=flat-square&logo=github&logoColor=white)](https://github.com/RSCAV)
@@ -15,27 +15,9 @@ I'm a developer and founder building products with an obsession for craft — th
 
 <br>
 
-<!-- ──────────────────────  CONTRIBUTIONS  ─────────────────────── -->
+<!-- ─────────────────────────  BUILDING  ───────────────────────── -->
 
-#### CONTRIBUTIONS
-
-[![Contribution graph](https://ghchart.rshah.org/404040/RSCAV)](https://github.com/RSCAV)
-
-<sub>**1,068** contributions in the last year</sub>
-
-<br>
-
-<!-- ─────────────────────────  TECH STACK  ─────────────────────── -->
-
-#### TECH STACK
-
-[![My tech stack](https://skillicons.dev/icons?i=ts,js,react,nextjs,tailwind,nodejs,python,supabase,postgres,vercel,git,figma&theme=light&perline=12)](https://skillicons.dev)
-
-<br>
-
-<!-- ──────────────────────  FEATURED PROJECTS  ─────────────────── -->
-
-#### FEATURED PROJECTS
+#### BUILDING
 
 <table>
 <tr>
@@ -44,32 +26,50 @@ I'm a developer and founder building products with an obsession for craft — th
 <br><br>
 <b>Gradvisr</b> &nbsp;·&nbsp; <a href="https://gradvisr.com">gradvisr.com</a>
 <br>
-AI degree planner that turns a UF transcript into a complete, prerequisite-correct path to graduation in seconds.
-<br><br>
-<img src="https://img.shields.io/badge/Next.js-0a0a0a?style=flat-square&logo=nextdotjs&logoColor=white">
-<img src="https://img.shields.io/badge/TypeScript-0a0a0a?style=flat-square&logo=typescript&logoColor=white">
-<img src="https://img.shields.io/badge/OpenAI-0a0a0a?style=flat-square&logo=openai&logoColor=white">
-<img src="https://img.shields.io/badge/Supabase-0a0a0a?style=flat-square&logo=supabase&logoColor=white">
+My startup. An AI degree planner that turns a UF transcript into a complete, prerequisite-correct path to graduation in seconds.
 </td>
 <td width="50%" valign="top">
-<a href="https://heartsinmotion.events"><img src="./assets/heartsinmotion.png" alt="Hearts in Motion" width="100%"></a>
+<a href="https://casanovaaleman.com"><img src="./assets/casanovaaleman.png" alt="Casanova-Aleman Studio" width="100%"></a>
 <br><br>
-<b>Hearts in Motion</b> &nbsp;·&nbsp; <a href="https://heartsinmotion.events">heartsinmotion.events</a>
+<b>Casanova-Aleman Studio</b> &nbsp;·&nbsp; <a href="https://casanovaaleman.com">casanovaaleman.com</a>
 <br>
-Live event platform for a pediatric-cancer research charity — RSVPs, sponsor tiers, and a cinematic donation flow.
-<br><br>
-<img src="https://img.shields.io/badge/Next.js-0a0a0a?style=flat-square&logo=nextdotjs&logoColor=white">
-<img src="https://img.shields.io/badge/Tailwind-0a0a0a?style=flat-square&logo=tailwindcss&logoColor=white">
-<img src="https://img.shields.io/badge/Stripe-0a0a0a?style=flat-square&logo=stripe&logoColor=white">
-<img src="https://img.shields.io/badge/Vercel-0a0a0a?style=flat-square&logo=vercel&logoColor=white">
+My web studio. I design and ship premium sites and products for founders and brands.
 </td>
 </tr>
 </table>
 
+**Inside the studio**
+
+<table>
+<tr><td><b>Hearts in Motion</b></td><td><a href="https://heartsinmotion.events">heartsinmotion.events</a></td><td>Event platform for a pediatric cancer research charity.</td></tr>
+<tr><td><b>Yntegra</b></td><td>private</td><td>Brand and platform for a luxury pickleball Pro-Am.</td></tr>
+<tr><td><b>Hammerforge MMA</b></td><td>private</td><td>Site for an MMA gym and fight team.</td></tr>
+<tr><td><b>MaxStrong</b></td><td>nonprofit</td><td>Built alongside Hearts in Motion.</td></tr>
+</table>
+
 <br>
 
-<!-- ─────────────────────────  FOOTER  ─────────────────────────── -->
+<!-- ──────────────────────  CONTRIBUTIONS  ─────────────────────── -->
 
-#### LET'S BUILD SOMETHING
+#### CONTRIBUTIONS
 
-Studios and startups hire me to design and ship web products end-to-end. If you have something in mind — [**casanovaaleman.com**](https://casanovaaleman.com) or [**rscav06@gmail.com**](mailto:rscav06@gmail.com).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RSCAV/RSCAV/output/snake-dark.svg">
+  <img alt="My GitHub contribution graph, played as a snake game" src="https://raw.githubusercontent.com/RSCAV/RSCAV/output/snake-light.svg" width="100%">
+</picture>
+
+<br>
+
+<!-- ────────────────────────────  ALWAYS  ──────────────────────── -->
+
+#### ALWAYS
+
+AI native, built that way from day one. I stay at the front of the line: always learning, always curious, always growing.
+
+<br>
+
+<!-- ─────────────────────────  LET'S BUILD  ────────────────────── -->
+
+#### LET'S BUILD
+
+If you are building something ambitious, find me at [casanovaaleman.com](https://casanovaaleman.com) or [rscav06@gmail.com](mailto:rscav06@gmail.com).
