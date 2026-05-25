@@ -53,10 +53,7 @@ My web studio. I design and ship premium sites and products for founders and bra
 
 #### CONTRIBUTIONS
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RSCAV/RSCAV/output/snake-dark.svg">
-  <img alt="My GitHub contribution graph, played as a snake game" src="https://raw.githubusercontent.com/RSCAV/RSCAV/output/snake-light.svg" width="100%">
-</picture>
+[![My contribution graph](https://ghchart.rshah.org/26a641/RSCAV)](https://github.com/RSCAV)
 
 <br>
 
