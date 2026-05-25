@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - profile-v2
 
 permissions:
   contents: write
