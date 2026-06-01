@@ -7,8 +7,6 @@
 
 🦈 &nbsp; **Always forward.**
 
-Founder of a startup, a studio, and whatever comes next.
-
 [![Website](https://img.shields.io/badge/casanovaaleman.com-0a0a0a?style=flat-square&logo=safari&logoColor=white)](https://casanovaaleman.com)
 [![GitHub](https://img.shields.io/badge/GitHub-0a0a0a?style=flat-square&logo=github&logoColor=white)](https://github.com/RSCAV)
 [![Email](https://img.shields.io/badge/Email-0a0a0a?style=flat-square&logo=gmail&logoColor=white)](mailto:rscav06@gmail.com)
