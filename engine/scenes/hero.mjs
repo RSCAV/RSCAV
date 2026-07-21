@@ -27,38 +27,78 @@ export function hero(d) {
   s.add(ridge({ x: -60, w: W + 120, baseY: HORIZON + 14, height: 74, seed: 58, cls: 'mid', peak: 0.72, roughness: 0.7 }))
 
   // --- the city ------------------------------------------------------------
+  // Both skyline runs are split at the type zone. On the light theme the
+  // buildings are dark and so is the copy, so anything the type overlaps
+  // disappears; keeping the left runs low reserves a clear zone in both
+  // themes without painting a scrim over the art.
+  const TYPE_ZONE = 470
+
   let phase = 0
-  const far = skyline({
+  const midLeft = skyline({
     x: -20,
-    w: W + 40,
+    w: TYPE_ZONE + 20,
     baseY: HORIZON + 30,
-    minH: 26,
-    maxH: 92,
+    minH: 18,
+    maxH: 40,
     seed: 91,
     cls: 'mid',
     windowCls: 'acc',
-    windowDensity: 0.18,
+    windowDensity: 0.14,
     minW: 14,
     maxW: 34,
     windowPhase: phase,
     breatheEvery: 0.9,
   })
+  s.add(midLeft.markup)
+
+  const far = skyline({
+    x: TYPE_ZONE,
+    w: W - TYPE_ZONE + 40,
+    baseY: HORIZON + 30,
+    minH: 26,
+    maxH: 92,
+    seed: 417,
+    cls: 'mid',
+    windowCls: 'acc',
+    windowDensity: 0.18,
+    minW: 14,
+    maxW: 34,
+    windowPhase: midLeft.nextPhase,
+    breatheEvery: 0.9,
+  })
   s.add(far.markup)
   phase = far.nextPhase
 
-  const near = skyline({
+  const nearLeft = skyline({
     x: -30,
-    w: W + 60,
+    w: TYPE_ZONE + 30,
+    baseY: GROUND,
+    minH: 34,
+    maxH: 74,
+    seed: 137,
+    cls: 'near',
+    windowCls: 'acc',
+    windowDensity: 0.3,
+    minW: 22,
+    maxW: 58,
+    windowPhase: phase,
+    breatheEvery: 0.8,
+  })
+  s.add(nearLeft.markup)
+
+  const near = skyline({
+    x: TYPE_ZONE,
+    w: W - TYPE_ZONE + 40,
     baseY: GROUND,
     minH: 46,
     maxH: 132,
-    seed: 137,
+    seed: 311,
     cls: 'near',
     windowCls: 'acc',
     windowDensity: 0.34,
     minW: 22,
     maxW: 58,
-    windowPhase: phase,
+    windowPhase: nearLeft.nextPhase,
     breatheEvery: 0.8,
   })
   s.add(near.markup)

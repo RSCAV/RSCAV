@@ -21,12 +21,14 @@ export function footer(d) {
   s.add(rampV(s, { ramp: 'sky', x: 0, y: 40, w: W, h: GROUND - 40, from: 0, to: 0.4, steps: 14 }))
 
   // the far edge of town, quieter than the hero's
+  // same reason as the hero: the closing line sits over this run, and on the
+  // light theme dark type over dark buildings vanishes
   const far = skyline({
     x: -20,
     w: W + 40,
     baseY: GROUND,
-    minH: 20,
-    maxH: 76,
+    minH: 14,
+    maxH: 34,
     seed: 555,
     cls: 'mid',
     windowCls: 'acc',
