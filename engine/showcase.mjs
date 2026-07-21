@@ -24,15 +24,17 @@ const OUT = join(HERE, '..', 'assets', 'gen')
 const FONT = readFileSync(join(HERE, 'data', 'InterVariable.woff2')).toString('base64')
 const fileUrl = (p) => pathToFileURL(p).href
 
-const C = {
-  navy: '#121827',
-  panel: '#0A0F19',
-  lift: '#1B2338',
-  edge: '#2A3350',
-  lime: '#C7FF02',
-  white: '#FFFFFF',
-  sub: '#AEB2C0',
-  faint: '#6C7286',
+const THEMES = {
+  dark: {
+    navy: '#121827', panel: '#0A0F19', lift: '#1B2338', edge: '#2A3350',
+    lime: '#C7FF02', white: '#FFFFFF', sub: '#AEB2C0', faint: '#6C7286',
+    light: '#3A4358',
+  },
+  light: {
+    navy: '#FFFFFF', panel: '#EDEDE7', lift: '#F2F2EE', edge: '#D8D8D2',
+    lime: '#C7FF02', white: '#0A0A0A', sub: '#5B5F66', faint: '#9AA0AA',
+    light: '#C4C4BE',
+  },
 }
 
 /** A macOS-style browser window around a screenshot. Grey lights, URL pill. */
@@ -54,7 +56,7 @@ function phoneHTML({ src, w, top, left, z = 3 }) {
   </div>`
 }
 
-function page(cfg) {
+function page(cfg, C) {
   const W = 1200
   const H = cfg.height
   const facts = cfg.facts
@@ -91,7 +93,7 @@ function page(cfg) {
   .plate{position:absolute;background:${C.panel};border-radius:14px;z-index:0}
   .win{position:absolute;overflow:hidden;background:${C.panel};border:1px solid ${C.edge};box-shadow:none}
   .bar{height:34px;background:${C.lift};display:flex;align-items:center;padding:0 13px;gap:7px;border-bottom:1px solid ${C.edge}}
-  .light{width:10px;height:10px;border-radius:50%;background:#3A4358}
+  .light{width:10px;height:10px;border-radius:50%;background:${C.light}}
   .pill{margin-left:11px;height:21px;background:${C.panel};border:1px solid ${C.edge};border-radius:6px;
     color:${C.sub};font-size:11.5px;display:flex;align-items:center;gap:7px;padding:0 12px}
   .lock{width:7px;height:6px;border:1.4px solid ${C.faint};border-radius:2px;position:relative;margin-top:1px}
@@ -165,23 +167,23 @@ const only = process.argv[2]
 const browser = await chromium.launch()
 for (const [name, cfg] of Object.entries(CONFIGS)) {
   if (only && name !== only) continue
-  const ctx = await browser.newContext({ viewport: { width: 1200, height: cfg.height }, deviceScaleFactor: 2 })
-  const p = await ctx.newPage()
-  const html = join(HERE, `.showcase-${name}.html`)
-  writeFileSync(html, page(cfg))
-  await p.goto(fileUrl(html), { waitUntil: 'networkidle' })
-  await p.waitForTimeout(500)
-  const raw = await p.screenshot({ type: 'png' })
-  const tmpPng = join(OUT, `${name}.tmp.png`)
-  writeFileSync(tmpPng, raw)
-  // WebP keeps a 2x screenshot-heavy band around 200 KB instead of ~900 KB,
-  // which matters when a README ships several of them
-  execFileSync('cwebp', ['-q', '86', '-quiet', tmpPng, '-o', join(OUT, `${name}.webp`)])
-  const { statSync, rmSync: rm } = await import('node:fs')
-  rm(tmpPng, { force: true })
-  console.log(`${name}.webp  ${(statSync(join(OUT, `${name}.webp`)).size / 1024).toFixed(0)} KB`)
-  await ctx.close()
-  const { rmSync } = await import('node:fs')
-  rmSync(html, { force: true })
+  for (const theme of ['dark', 'light']) {
+    const ctx = await browser.newContext({ viewport: { width: 1200, height: cfg.height }, deviceScaleFactor: 2 })
+    const p = await ctx.newPage()
+    const html = join(HERE, `.showcase-${name}-${theme}.html`)
+    writeFileSync(html, page(cfg, THEMES[theme]))
+    await p.goto(fileUrl(html), { waitUntil: 'networkidle' })
+    await p.waitForTimeout(500)
+    const tmpPng = join(OUT, `${name}.tmp.png`)
+    writeFileSync(tmpPng, await p.screenshot({ type: 'png' }))
+    // WebP keeps a 2x screenshot-heavy band near 170 KB instead of ~900 KB
+    const outFile = join(OUT, `${name}-${theme}.webp`)
+    execFileSync('cwebp', ['-q', '86', '-quiet', tmpPng, '-o', outFile])
+    const { statSync, rmSync: rm } = await import('node:fs')
+    rm(tmpPng, { force: true })
+    rm(html, { force: true })
+    console.log(`${name}-${theme}.webp  ${(statSync(outFile).size / 1024).toFixed(0)} KB`)
+    await ctx.close()
+  }
 }
 await browser.close()

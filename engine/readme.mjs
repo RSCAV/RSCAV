@@ -8,9 +8,16 @@ import { byMonth } from './lib/data.mjs'
 const band = (file, alt) => `<img src="assets/gen/${file}.svg" alt="${alt}" width="100%">`
 
 // The two product bands are real screenshots, so they ship as committed WebP
-// rather than generated SVG, and each one links out to the live product.
+// rather than generated SVG. A raster cannot restyle itself the way the SVG
+// bands do, so each one is rendered twice and swapped with <picture> - without
+// that, the products would stay on a dark panel while every other band turned
+// to daylight. Each band links out to the live product.
 const showcase = (file, alt, href) =>
-  `<a href="${href}"><img src="assets/gen/${file}.webp" alt="${alt}" width="100%"></a>`
+  `<a href="${href}"><picture>` +
+  `<source media="(prefers-color-scheme: dark)" srcset="assets/gen/${file}-dark.webp">` +
+  `<source media="(prefers-color-scheme: light)" srcset="assets/gen/${file}-light.webp">` +
+  `<img src="assets/gen/${file}-dark.webp" alt="${alt}" width="100%">` +
+  `</picture></a>`
 
 export function readme(d, tiles, geojson) {
   const months = byMonth(d.days)
