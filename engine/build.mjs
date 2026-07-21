@@ -4,14 +4,13 @@
 // SVG, so the README never depends on a third-party endpoint staying up and
 // never gets stale-cached behind GitHub's image proxy.
 
-import { writeFileSync, mkdirSync, statSync, rmSync } from 'node:fs'
+import { writeFileSync, mkdirSync, statSync, rmSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { fetchContributions } from './lib/data.mjs'
 import { hero } from './scenes/hero.mjs'
 import { city } from './scenes/city.mjs'
 import { towerTiles, towersMarkdown } from './scenes/towers.mjs'
-import { opennodo } from './scenes/opennodo.mjs'
 import { charts } from './scenes/charts.mjs'
-import { propiedash } from './scenes/propiedash.mjs'
 import { studio } from './scenes/studio.mjs'
 import { footer } from './scenes/footer.mjs'
 import { lint } from './lib/lint.mjs'
@@ -21,10 +20,12 @@ import { readme } from './readme.mjs'
 const LOGIN = process.env.PROFILE_LOGIN || 'RSCAV'
 const OUT = new URL('../assets/gen/', import.meta.url).pathname
 
-// wipe first: renaming a band used to leave its old file behind, and the
-// README picks up whatever is in this directory
-rmSync(OUT, { recursive: true, force: true })
+// Wipe only the generated SVGs: renaming a band used to leave its old file
+// behind and the README picks up whatever is here. The product showcases are
+// committed .webp built by showcase.mjs from real screenshots, so they must
+// survive a rebuild.
 mkdirSync(OUT, { recursive: true })
+for (const f of readdirSync(OUT)) if (f.endsWith('.svg')) rmSync(join(OUT, f), { force: true })
 
 const t0 = Date.now()
 console.log(`fetching contributions for ${LOGIN}...`)
@@ -37,8 +38,6 @@ console.log(
 
 const BANDS = [
   ['01-hero', hero],
-  ['03-propiedash', () => propiedash()],
-  ['04-opennodo', () => opennodo()],
   ['05-studio', () => studio()],
   ['06-city', city],
   ['07-charts', charts],
