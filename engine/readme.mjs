@@ -57,9 +57,9 @@ ${band('08-footer', 'Get in touch')}
 
 <br>
 
-**Rodrigo Casanova-Aleman.** I build things. All of them. Caracas, Madrid, Miami, Gainesville.
+**Rodrigo Casanova-Aleman.** Founder and builder. Caracas, Madrid, Miami, Gainesville.
 
-${VENTURES.map((v) => `- **${v.display}** — ${v.tagline}. ${v.role}. ${linkOf(v)}`).join('\n')}
+${VENTURES.map((v) => `- **${v.display}** — ${v.tagline}.${v.role ? ` ${v.role}.` : ''} ${linkOf(v)}`).join('\n')}
 
 **The year in numbers.** ${d.total.toLocaleString('en-US')} contributions between ${d.from} and ${d.to},
 across ${d.activeDays} days I actually shipped on. Longest streak ${d.longestStreak} days.

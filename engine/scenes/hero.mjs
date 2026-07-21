@@ -2,7 +2,7 @@
 // The establishing shot: a valley city at night under El Avila, name set over
 // the sky, the skyline forming the ground that the next band continues from.
 
-import { Scene, n } from '../lib/svg.mjs'
+import { Scene, n, measure } from '../lib/svg.mjs'
 import { W, TYPE, TRACK } from '../lib/tokens.mjs'
 import { rampV } from '../lib/dither.mjs'
 import { ridge, skyline, stars, propiedashMark } from '../lib/skyline.mjs'
@@ -109,9 +109,11 @@ export function hero(d) {
 
   // --- type ----------------------------------------------------------------
   const X = 64
-  s.accentText('BUILDER', { x: X, y: 74, size: TYPE.label, weight: 700, cls: 's', track: TRACK.label })
-  s.text('CARACAS  MADRID  MIAMI  GAINESVILLE', {
-    x: X + 78,
+  const eb = 'FOUNDER'
+  s.accentText(eb, { x: X, y: 74, size: TYPE.label, weight: 700, cls: 's', track: TRACK.label })
+  const ebRight = X + measure(eb, { size: TYPE.label, weight: 700, track: TRACK.label }) + TYPE.label * 0.5
+  s.text('BUILDER · CARACAS · MADRID · MIAMI · GAINESVILLE', {
+    x: ebRight + 16,
     y: 74,
     size: TYPE.label,
     weight: 500,

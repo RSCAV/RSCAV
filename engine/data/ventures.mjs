@@ -12,7 +12,8 @@ export const VENTURES = [
     display: 'Propiedash',
     href: 'https://propiedash.com',
     tagline: 'The real-estate marketplace for Venezuela',
-    role: 'Building it',
+    // no role stated here on purpose - see the intro line instead
+    role: null,
     status: 'LIVE',
     towerW: 264,
     weight: 1.0,
@@ -24,7 +25,7 @@ export const VENTURES = [
     display: 'OpenNodo',
     href: 'https://opennodo.org',
     tagline: 'An open place standard for Venezuela',
-    role: 'Author',
+    role: 'Founder & lead developer',
     status: 'ALPHA',
     towerW: 192,
     weight: 0.64,

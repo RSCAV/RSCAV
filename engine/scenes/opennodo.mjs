@@ -6,7 +6,7 @@
 // itself.
 
 import { readFileSync } from 'node:fs'
-import { Scene, n } from '../lib/svg.mjs'
+import { Scene, n, measure } from '../lib/svg.mjs'
 import { W, TYPE, TRACK } from '../lib/tokens.mjs'
 import { IGNITE, SETTLE, DRAW } from '../lib/motion.mjs'
 
@@ -107,7 +107,20 @@ export function opennodo() {
 
   // --- type ----------------------------------------------------------------
   const X = 64
-  s.accentText('OPEN SOURCE', { x: X, y: 78, size: TYPE.label, weight: 700, cls: 's', track: TRACK.label })
+  const eb = 'OPEN SOURCE'
+  s.accentText(eb, { x: X, y: 78, size: TYPE.label, weight: 700, cls: 's', track: TRACK.label })
+  // the role sits after the chip, so "founder and lead developer" is stated on
+  // the band itself and not only in the text fallback
+  const ebRight = X + measure(eb, { size: TYPE.label, weight: 700, track: TRACK.label }) + TYPE.label * 0.5
+  s.text('FOUNDER & LEAD DEVELOPER', {
+    x: ebRight + 16,
+    y: 78,
+    size: TYPE.label,
+    weight: 500,
+    cls: 'faint s',
+    track: TRACK.label,
+    extra: 'style="animation-delay:.15s"',
+  })
   s.text('OpenNodo', {
     x: X - 3,
     y: 148,
