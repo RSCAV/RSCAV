@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RODRIGO CASANOVA-ALEMAN — the city</title>
+<style>
+  @font-face{font-family:Inter;font-weight:100 900;src:url(vendor/inter.woff2) format('woff2')}
+  :root{--lime:#C7FF02;--navy:#121827;--ink:#fff;--sub:#aeb2c0}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:#090d15;font-family:Inter,system-ui,-apple-system,sans-serif;color:#fff}
+  #app{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%}
+
+  /* ---------- cinematic overlays ---------- */
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:5;
+    box-shadow:inset 0 0 240px 60px rgba(0,0,0,.72)}
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ---------- HUD ---------- */
+  .hud{position:fixed;inset:0;z-index:10;pointer-events:none}
+  .par{will-change:transform;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+
+  .top{position:absolute;top:36px;left:44px;right:44px;display:flex;justify-content:space-between;align-items:flex-start}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font:800 11px Inter;letter-spacing:3px}
+  .eyebrow .chip{background:var(--lime);color:#0a0a0a;padding:4px 8px}
+  .eyebrow .dim{color:var(--sub);font-weight:600;letter-spacing:2.4px}
+  .name{margin-top:16px;font:800 clamp(34px,5.4vw,74px)/.92 Inter;letter-spacing:-3px}
+  .name .l{font-weight:200}
+  .tag{margin-top:12px;font:400 clamp(13px,1.4vw,18px) Inter;color:var(--sub);max-width:30ch}
+  .mark{width:54px;height:54px;opacity:.92}
+
+  .ventures{position:absolute;left:44px;bottom:120px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+  .v{display:flex;align-items:center;gap:12px;padding:9px 14px 9px 12px;border:1px solid rgba(199,255,2,.14);
+    border-radius:11px;background:rgba(12,16,26,.5);backdrop-filter:blur(8px);cursor:pointer;
+    transform:translateX(0);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,background .3s;text-decoration:none;color:#fff;width:max-content}
+  .v:hover{transform:translateX(10px);border-color:var(--lime);background:rgba(199,255,2,.08)}
+  .v .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime)}
+  .v .dot.a{background:#7fd4ff;box-shadow:0 0 10px #7fd4ff}
+  .v .dot.o{background:#ff9ad1;box-shadow:0 0 10px #ff9ad1}
+  .v b{font:700 14px Inter}
+  .v span{font:400 12px Inter;color:var(--sub)}
+  .v .st{margin-left:10px;font:700 8px Inter;letter-spacing:1.4px;color:var(--lime)}
+  .v:hover .st{color:#fff}
+
+  .stats{position:absolute;right:44px;bottom:120px;display:flex;gap:30px;text-align:right}
+  .stats .s b{display:block;font:700 clamp(22px,2.4vw,34px) Inter;letter-spacing:-1px;
+    font-variant-numeric:tabular-nums}
+  .stats .s u{font:700 8px Inter;letter-spacing:1.8px;color:#6c7286;text-decoration:none}
+  .stats .s b .lime{color:var(--lime)}
+
+  .foot{position:absolute;left:44px;right:44px;bottom:40px;display:flex;justify-content:space-between;align-items:center;
+    font:600 10px Inter;letter-spacing:2px;color:#5a6178}
+  .hint{display:inline-flex;align-items:center;gap:9px;pointer-events:auto}
+  .hint .drag{width:26px;height:16px;border:1.5px solid #5a6178;border-radius:9px;position:relative}
+  .hint .drag::after{content:'';position:absolute;top:2px;left:3px;width:5px;height:9px;border-radius:3px;background:var(--lime);
+    animation:drag 2.4s ease-in-out infinite}
+  @keyframes drag{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+  .foot a{color:#8a93ad;text-decoration:none;margin-left:22px}
+  .foot a:hover{color:var(--lime)}
+
+  /* peak call-out that floats over the tallest tower */
+  #peak{position:fixed;z-index:9;pointer-events:none;transform:translate(-50%,-100%);opacity:0;transition:opacity .5s}
+  #peak .b{background:var(--lime);color:#0a0a0a;font:800 10px Inter;letter-spacing:1px;padding:4px 8px;white-space:nowrap}
+  #peak .stem{width:1px;height:26px;background:var(--lime);margin:0 auto}
+
+  .loading{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:#090d15;transition:opacity .8s}
+  .loading.gone{opacity:0;pointer-events:none}
+  .loading .l{font:800 12px Inter;letter-spacing:4px;color:var(--lime);animation:pl 1.2s ease-in-out infinite}
+  @keyframes pl{0%,100%{opacity:.3}50%{opacity:1}}
+
+  /* mode switch */
+  .modes{position:absolute;top:36px;right:44px;display:flex;gap:6px;pointer-events:auto}
+  .modes button{background:rgba(12,16,26,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);
+    color:var(--sub);font:700 10px Inter;letter-spacing:1px;padding:7px 12px;border-radius:8px;cursor:pointer}
+  .modes button.on{background:var(--lime);color:#0a0a0a;border-color:var(--lime)}
+</style>
+</head>
+<body>
+<div class="loading" id="loading"><div class="l">BUILDING THE CITY…</div></div>
+<div id="app"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<div id="peak"><div class="b">518 IN ONE DAY · JUNE 11</div><div class="stem"></div></div>
+
+<div class="hud">
+  <div class="top">
+    <div class="par" data-depth="14">
+      <span class="eyebrow"><span class="chip">FOUNDER</span><span class="dim">&amp; BUILDER · CARACAS → GAINESVILLE</span></span>
+      <div class="name">RODRIGO<br><span class="l">CASANOVA-ALEMAN</span></div>
+      <div class="tag">I build things. All of them. This city is my last year of work — one building per day.</div>
+    </div>
+    <div class="modes par" data-depth="6">
+      <button class="on" data-mode="orbit">Auto-orbit</button>
+      <button data-mode="fly">Fly-through</button>
+    </div>
+  </div>
+
+  <div class="ventures par" data-depth="20">
+    <a class="v" href="https://propiedash.com" target="_blank"><span class="dot"></span><b>Propiedash</b><span>real-estate marketplace</span><span class="st">LIVE</span></a>
+    <a class="v" href="https://opennodo.org" target="_blank"><span class="dot a"></span><b>OpenNodo</b><span>open place standard</span><span class="st">ALPHA</span></a>
+    <a class="v" href="https://casanovaaleman.com" target="_blank"><span class="dot o"></span><b>casanovaaleman</b><span>design &amp; web studio</span><span class="st">OPEN</span></a>
+  </div>
+
+  <div class="stats par" data-depth="10">
+    <div class="s"><b id="sContrib">0</b><u>CONTRIBUTIONS</u></div>
+    <div class="s"><b id="sDays">0</b><u>DAYS BUILT ON</u></div>
+    <div class="s"><b class="lime" id="sPeak">0</b><u>PEAK DAY</u></div>
+  </div>
+
+  <div class="foot">
+    <span class="hint"><span class="drag"></span> DRAG TO EXPLORE · SCROLL TO ZOOM</span>
+    <span><a href="https://propiedash.com" target="_blank">propiedash.com</a><a href="https://opennodo.org" target="_blank">opennodo.org</a><a href="mailto:rscav06@gmail.com">rscav06@gmail.com</a></span>
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/contrib.js"></script>
+<script>
+/* ---------------------------------------------------------------------------
+   THE CITY — a live 3D render of RSCAV's contribution year.
+   One building per day, height = that day's count. Drag to orbit, scroll to zoom.
+--------------------------------------------------------------------------- */
+const DAYS = window.CONTRIB;                 // 366 ints
+const MAX = Math.max(...DAYS, 1);
+const COLS = Math.ceil(DAYS.length / 7);     // ~53 weeks
+const CELL = 1.0, GAP = 0.16, TALLEST = 11;
+const LIME = 0xC7FF02, NAVY = 0x121827;
+
+const app = document.getElementById('app');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e18);
+scene.fog = new THREE.Fog(0x0a0e18, 40, 110);
+
+const camera = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, 0.1, 400);
+camera.position.set(3, 15, 30);
+
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+app.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minDistance = 14; controls.maxDistance = 72;
+controls.minPolarAngle = 0.15; controls.maxPolarAngle = Math.PI/2 - 0.06;
+controls.autoRotate = true; controls.autoRotateSpeed = 0.55;
+controls.target.set(0, 3.2, 0);
+
+/* ---------- lighting: cool key + warm-ish fill, low so navy stays navy ---------- */
+scene.add(new THREE.HemisphereLight(0x2a3760, 0x05070c, 0.85));
+const key2 = new THREE.DirectionalLight(0xbcd0ff, 0.9);
+key2.position.set(24, 40, 18); scene.add(key2);
+const rim = new THREE.DirectionalLight(0xC7FF02, 0.28);
+rim.position.set(-30, 12, -24); scene.add(rim);
+
+/* ---------- ground plane + grid ---------- */
+const groundW = COLS*(CELL+GAP), groundD = 7*(CELL+GAP);
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(groundW*3, groundD*10),
+  new THREE.MeshStandardMaterial({color:0x0b1120, roughness:1, metalness:0})
+);
+ground.rotation.x = -Math.PI/2; ground.position.y = 0; scene.add(ground);
+
+const grid = new THREE.GridHelper(220, 110, 0x1b2846, 0x141d33);
+grid.material.transparent = true; grid.material.opacity = 0.35; grid.position.y = 0.01; scene.add(grid);
+
+/* ---------- the buildings (instanced) ---------- */
+const geo = new THREE.BoxGeometry(1,1,1);
+geo.translate(0, 0.5, 0);                    // grow from the ground up
+const N = DAYS.length;
+const bodyMat = new THREE.MeshStandardMaterial({color:0xffffff, roughness:.82, metalness:.08});
+const mesh = new THREE.InstancedMesh(geo, bodyMat, N);
+mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+// centre on the built-up columns, not the empty first half of the year
+const _builtCols = DAYS.map((c,i)=>c>0?Math.floor(i/7):null).filter(v=>v!==null);
+const _cCol = _builtCols.reduce((a,b)=>a+b,0)/Math.max(1,_builtCols.length);
+const OFFX = _cCol*(CELL+GAP);
+const P = (i)=>{ const col=Math.floor(i/7), row=i%7; return [ col*(CELL+GAP)-OFFX, (row-3)*(CELL+GAP) ]; };
+const heights = DAYS.map(c => c<=0 ? 0.06 : Math.pow(c/MAX, 0.44)*TALLEST + 0.7);
+const p90 = [...DAYS].filter(c=>c>0).sort((a,b)=>a-b)[Math.floor(DAYS.filter(c=>c>0).length*0.9)] || MAX;
+
+const _m = new THREE.Matrix4(), _c = new THREE.Color();
+let peakIdx = DAYS.indexOf(MAX);
+for (let i=0;i<N;i++){
+  const [x,z]=P(i), h=heights[i];
+  const isEmpty = DAYS[i]<=0, isPeak = DAYS[i]>=p90;
+  _m.makeScale(CELL, 0.001, CELL); _m.setPosition(x, 0, z);
+  mesh.setMatrixAt(i, _m);
+  if (isEmpty) _c.setHex(0x121a2e);
+  else if (isPeak) _c.setHex(0x2b3d63);
+  else _c.setHex(0x1d2846);
+  mesh.setColorAt(i, _c);
+}
+mesh.instanceColor.needsUpdate = true;
+scene.add(mesh);
+
+/* lime roof caps on the peak towers */
+const caps = [];
+const capMat = new THREE.MeshBasicMaterial({color:LIME});
+for (let i=0;i<N;i++){
+  if (DAYS[i] < p90) continue;
+  const [x,z]=P(i);
+  const cap = new THREE.Mesh(new THREE.BoxGeometry(CELL, 0.12, CELL), capMat);
+  cap.position.set(x, heights[i], z); cap.userData.i=i; caps.push(cap); scene.add(cap);
+}
+
+/* ---------- the windows: a living field of lit points ---------- */
+const wPos=[], wSeed=[], wCol=[];
+for (let i=0;i<N;i++){
+  if (DAYS[i]<=2) continue;
+  const [x,z]=P(i), h=heights[i], rows=Math.min(9, Math.floor(h/0.9));
+  for (let r=0;r<rows;r++){
+    for (const side of [[0,0.5],[0.5,0],[0,-0.5],[-0.5,0]]){
+      if (Math.random()>0.5) continue;
+      const y = 0.5 + r*0.9;
+      const jitter = (Math.random()-0.5)*0.5;
+      wPos.push(x+side[0]*CELL + (side[0]===0?jitter:0), y, z+side[1]*CELL + (side[1]===0?jitter:0));
+      wSeed.push(Math.random()*6.28);
+      // deep in the year -> more lime; early -> dimmer
+      wCol.push(i/N);
+    }
+  }
+}
+const wGeo = new THREE.BufferGeometry();
+wGeo.setAttribute('position', new THREE.Float32BufferAttribute(wPos, 3));
+wGeo.setAttribute('aSeed', new THREE.Float32BufferAttribute(wSeed, 1));
+wGeo.setAttribute('aWave', new THREE.Float32BufferAttribute(wCol, 1));
+const wMat = new THREE.ShaderMaterial({
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  uniforms:{ uTime:{value:0}, uSize:{value: renderer.getPixelRatio()* (innerHeight/900) * 1.7 } },
+  vertexShader:`
+    attribute float aSeed; attribute float aWave; uniform float uTime; uniform float uSize;
+    varying float vB;
+    void main(){
+      vec4 mv = modelViewMatrix * vec4(position,1.0);
+      float twinkle = 0.55 + 0.45*sin(uTime*2.2 + aSeed*3.0);
+      float wave = smoothstep(0.0,1.0, sin(uTime*0.6 - position.x*0.16 + aWave*3.0)*0.5+0.5);
+      vB = twinkle*(0.5 + 0.9*wave);
+      gl_PointSize = uSize * (40.0/-mv.z) * (0.8+0.7*wave);
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader:`
+    varying float vB;
+    void main(){
+      vec2 d = gl_PointCoord - 0.5;
+      float a = smoothstep(0.5,0.0, length(d));
+      vec3 col = mix(vec3(0.62,0.85,0.32), vec3(0.78,1.0,0.01), clamp(vB,0.0,1.0));
+      gl_FragColor = vec4(col, a*clamp(vB*1.25,0.0,1.0));
+    }`
+});
+const windows = new THREE.Points(wGeo, wMat); scene.add(windows);
+
+/* ---------- stars ---------- */
+const sPos=[]; for(let i=0;i<900;i++){ const r=120+Math.random()*140, t=Math.random()*6.28, p=Math.acos(Math.random()*0.9);
+  sPos.push(r*Math.sin(p)*Math.cos(t), Math.abs(r*Math.cos(p))*0.7+8, r*Math.sin(p)*Math.sin(t)); }
+const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(sPos,3)),
+  new THREE.PointsMaterial({color:0x9fb4dd, size:0.5, sizeAttenuation:true, transparent:true, opacity:.7}));
+scene.add(stars);
+
+/* ---------- El Avila: a dark ridge behind the city ---------- */
+(function ridge(){
+  const shape = new THREE.Shape(); shape.moveTo(-140,0);
+  let h=6; for(let x=-140;x<=140;x+=8){ h += (Math.random()-0.5)*10; h=Math.max(6,Math.min(40, h*0.7 + 22*Math.exp(-((x/60)**2)))); shape.lineTo(x, h); }
+  shape.lineTo(140,0); shape.lineTo(-140,0);
+  const g = new THREE.ShapeGeometry(shape);
+  const m = new THREE.MeshBasicMaterial({color:0x0e1526, fog:true});
+  const mesh = new THREE.Mesh(g, m); mesh.position.set(0,0,-70); scene.add(mesh);
+})();
+
+/* ---------- build animation (staggered rise) ---------- */
+let buildStart = performance.now();
+function playBuild(){ buildStart = performance.now(); }
+const RISE = 2600;
+function updateBuild(now){
+  const t = now - buildStart;
+  for (let i=0;i<N;i++){
+    const [x,z]=P(i);
+    const col = Math.floor(i/7);
+    const delay = col*34;
+    let k = Math.max(0, Math.min(1, (t - delay)/900));
+    k = 1 - Math.pow(1-k, 3);                     // easeOutCubic
+    const h = Math.max(0.001, heights[i]*k);
+    _m.makeScale(CELL, h, CELL); _m.setPosition(x, 0, z);
+    mesh.setMatrixAt(i, _m);
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  caps.forEach(c=>{ const col=Math.floor(c.userData.i/7); let k=Math.max(0,Math.min(1,(t-col*34)/900)); k=1-Math.pow(1-k,3); c.position.y=heights[c.userData.i]*k; c.visible=k>0.02; });
+}
+
+/* ---------- fly-through path (optional mode) ---------- */
+let mode='orbit', flyT=0;
+document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.modes button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); mode=b.dataset.mode;
+  controls.autoRotate = mode==='orbit'; controls.enabled = mode==='orbit';
+  if(mode==='fly') flyT=0;
+  playBuild();
+});
+
+/* ---------- peak call-out follows the tallest tower ---------- */
+const peakEl = document.getElementById('peak');
+const peakPos = new THREE.Vector3();
+function updatePeak(){
+  const [x,z]=P(peakIdx);
+  peakPos.set(x, heights[peakIdx]+2, z).project(camera);
+  if (peakPos.z<1){ peakEl.style.left=(peakPos.x*0.5+0.5)*innerWidth+'px'; peakEl.style.top=(-peakPos.y*0.5+0.5)*innerHeight+'px'; peakEl.style.opacity=1; }
+  else peakEl.style.opacity=0;
+}
+
+/* ---------- HUD parallax + stat count-up ---------- */
+let mx=0,my=0;
+addEventListener('mousemove',e=>{ mx=(e.clientX/innerWidth-0.5); my=(e.clientY/innerHeight-0.5); });
+function parallax(){ document.querySelectorAll('.par').forEach(el=>{ const d=+el.dataset.depth||10; el.style.transform=`translate(${-mx*d}px,${-my*d}px)`; }); }
+
+function countUp(id, to, dur, fmt){ const el=document.getElementById(id); const s=performance.now();
+  (function step(n){ const k=Math.min(1,(n-s)/dur); const v=Math.floor((1-Math.pow(1-k,3))*to); el.textContent=fmt?v.toLocaleString('en-US'):v; if(k<1)requestAnimationFrame(step); })(s); }
+
+/* ---------- loop ---------- */
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); wMat.uniforms.uSize.value=renderer.getPixelRatio()*(innerHeight/900); });
+
+let started=false;
+function animate(now){
+  requestAnimationFrame(animate);
+  wMat.uniforms.uTime.value = now/1000;
+  if (now - buildStart < RISE+400) updateBuild(now);
+  if (mode==='fly'){
+    flyT += 0.0016;
+    const r=30, a=flyT*1.4;
+    camera.position.set(Math.cos(a)*r*1.2, 6+Math.sin(flyT*0.7)*3+4, Math.sin(a)*r*1.2 - 6);
+    camera.lookAt(Math.cos(a+0.5)*6, 5, Math.sin(a+0.5)*6);
+  } else controls.update();
+  stars.rotation.y = now*0.000015;
+  parallax(); updatePeak();
+  renderer.render(scene,camera);
+  if(!started){ started=true; document.getElementById('loading').classList.add('gone');
+    countUp('sContrib', 5185, 1800, true); countUp('sDays', 90, 1500); countUp('sPeak', 518, 1500); }
+}
+playBuild(); animate(performance.now());
+</script>
+</body>
+</html>
