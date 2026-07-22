@@ -1,0 +1,10 @@
+node_modules
+.shot.html
+.shotworld.html
+preview.html
+engine/data/ve-states.src.json
+engine/data/*-raw.svg
+engine/dbg.mjs
+engine/render.mjs
+lab/shoot.mjs
+lab/verify.mjs
