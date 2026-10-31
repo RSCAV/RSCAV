@@ -10,4 +10,4 @@
 
 **Founder of [CA Studio](https://casanovaaleman.com).** Building software, websites and design.
 
-[LinkedIn](https://www.linkedin.com/in/rodrigo-casanova-aleman/) · [Instagram](https://www.instagram.com/rodricasanovaa/) · [X](https://x.com/RSCAV06)
+[About](https://casanovaaleman.com) · [LinkedIn](https://www.linkedin.com/in/rodrigo-casanova-aleman/) · [Instagram](https://www.instagram.com/rodricasanovaa/) · [X](https://x.com/RSCAV06)
